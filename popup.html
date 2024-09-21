@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clear Browser Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+    }
+    label {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Clear Browser Data</h3>
+  <form id="clearDataForm">
+    <label><input type="checkbox" id="clearCache" /> Cache</label><br />
+    <label><input type="checkbox" id="clearCookies" /> Cookies</label><br />
+    <label><input type="checkbox" id="clearHistory" /> History</label><br /><br />
+    
+    <button type="button" id="clearSelectedBtn">Clear Selected</button><br /><br />
+    
+    <button type="button" id="clearAllBtn">Clear All</button>
+  </form>
+
+  <script src="popup.js"></script>
+</body>
+</html>
