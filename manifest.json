@@ -4,7 +4,8 @@
     "version": "1.0",
     "description": "Clear browser cache in one click",
     "permissions": [
-      "browsingData"
+      "browsingData",
+      "notifications"
     ],
     "action": {
       "default_popup": "popup.html",
