@@ -28,29 +28,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function addClearedAnimation(inputId) {
+    // Function to show a message after clearing data
+    function showClearedMessage(clearedItems) {
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('cleared-message');
+        messageContainer.textContent = `Cleared: ${clearedItems.join(', ')}`;
+        
+        // Remove buttons and show the message
+        document.getElementById('clearSelectedBtn').classList.add('hidden');
+        document.getElementById('clearAllBtn').classList.add('hidden');
+        document.querySelector('.container').appendChild(messageContainer);
+    }
+
+    function addClearedAnimation(inputId, delay) {
         const checkbox = document.getElementById(inputId);
         if (!checkbox) {
             log(`Checkbox with ID ${inputId} not found`, true);
             return;
         }
-    
+
         const container = checkbox.closest('.checkbox-container');
         if (!container) {
             log(`No checkbox-container found for ${inputId}`, true);
             return;
         }
-    
+
         const tickMark = container.querySelector('.tick');
         if (!tickMark) {
             log(`Tick mark not found for ${inputId}`, true);
             return;
         }
-    
-        // Add the cleared class for animation
-        container.classList.add('cleared');
+
+        setTimeout(() => {
+            container.classList.add('cleared');
+        }, delay); // Delay for tick mark animation
     }
-    
 
     document.getElementById('clearSelectedBtn').addEventListener('click', function() {
         log("Clear Selected button clicked");
@@ -62,9 +74,27 @@ document.addEventListener('DOMContentLoaded', function() {
         log(`Selected options: Cache: ${clearCache}, Cookies: ${clearCookies}, History: ${clearHistory}`);
 
         let dataToClear = {};
-        if (clearCache) dataToClear.cache = true;
-        if (clearCookies) dataToClear.cookies = true;
-        if (clearHistory) dataToClear.history = true;
+        let clearedItems = [];
+        let delay = 0;
+
+        if (clearCache) {
+            dataToClear.cache = true;
+            clearedItems.push('Cache');
+            addClearedAnimation('clearCache', delay);
+            delay += 500; // Add 500ms delay between animations
+        }
+        if (clearCookies) {
+            dataToClear.cookies = true;
+            clearedItems.push('Cookies');
+            addClearedAnimation('clearCookies', delay);
+            delay += 500;
+        }
+        if (clearHistory) {
+            dataToClear.history = true;
+            clearedItems.push('History');
+            addClearedAnimation('clearHistory', delay);
+            delay += 500;
+        }
 
         if (Object.keys(dataToClear).length === 0) {
             log("No data selected, showing notification");
@@ -79,12 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 log(`Error clearing data: ${chrome.runtime.lastError.message}`, true);
                 createNotification('Error', 'Failed to clear data. Please try again.');
             } else {
-                if (clearCache) addClearedAnimation('clearCache');
-                if (clearCookies) addClearedAnimation('clearCookies');
-                if (clearHistory) addClearedAnimation('clearHistory');
-
                 log(`Data cleared: ${JSON.stringify(dataToClear)}`);
                 createNotification('Success', 'Selected data cleared successfully!');
+                
+                // Show the message of what was cleared
+                setTimeout(() => {
+                    showClearedMessage(clearedItems);
+                }, delay + 500); // Show message after all animations are done
             }
         });
     });
@@ -92,9 +123,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('clearAllBtn').addEventListener('click', function() {
         log("Clear All button clicked");
 
-        document.getElementById('clearCache').checked = true;
-        document.getElementById('clearCookies').checked = true;
-        document.getElementById('clearHistory').checked = true;
+        const clearCache = document.getElementById('clearCache');
+        const clearCookies = document.getElementById('clearCookies');
+        const clearHistory = document.getElementById('clearHistory');
+
+        clearCache.checked = true;
+        clearCookies.checked = true;
+        clearHistory.checked = true;
+
+        let clearedItems = ['Cache', 'Cookies', 'History'];
+        let delay = 0;
 
         chrome.browsingData.remove({
             "since": 0
@@ -107,12 +145,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 log(`Error clearing data: ${chrome.runtime.lastError.message}`, true);
                 createNotification('Error', 'Failed to clear data. Please try again.');
             } else {
-                addClearedAnimation('clearCache');
-                addClearedAnimation('clearCookies');
-                addClearedAnimation('clearHistory');
+                addClearedAnimation('clearCache', delay);
+                delay += 500;
+                addClearedAnimation('clearCookies', delay);
+                delay += 500;
+                addClearedAnimation('clearHistory', delay);
 
                 log('Data cleared: {"cache":true,"cookies":true,"history":true}');
                 createNotification('Success', 'All data cleared successfully!');
+                
+                // Show the message for "Clear All"
+                setTimeout(() => {
+                    showClearedMessage(clearedItems);
+                }, delay + 500);
             }
         });
     });
