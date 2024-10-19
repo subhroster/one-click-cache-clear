@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to log messages both to console and to the popup
     function log(message, isError = false) {
         console.log(message);
         const logElement = document.getElementById('log');
@@ -11,13 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to create notifications with enhanced error logging
     function createNotification(title, message) {
         log(`Attempting to create notification: ${title} - ${message}`);
         
         chrome.notifications.create({
             type: 'basic',
-            iconUrl: chrome.runtime.getURL('icons/icon128.png'),  // Ensure the correct icon path
+            iconUrl: chrome.runtime.getURL('icons/icon128.png'),
             title: title,
             message: message,
             priority: 2
@@ -30,17 +28,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event handler for Clear Selected button
+    function addClearedAnimation(inputId) {
+        const checkbox = document.getElementById(inputId);
+        if (!checkbox) {
+            log(`Checkbox with ID ${inputId} not found`, true);
+            return;
+        }
+    
+        const container = checkbox.closest('.checkbox-container');
+        if (!container) {
+            log(`No checkbox-container found for ${inputId}`, true);
+            return;
+        }
+    
+        const tickMark = container.querySelector('.tick');
+        if (!tickMark) {
+            log(`Tick mark not found for ${inputId}`, true);
+            return;
+        }
+    
+        // Add the cleared class for animation
+        container.classList.add('cleared');
+    }
+    
+
     document.getElementById('clearSelectedBtn').addEventListener('click', function() {
         log("Clear Selected button clicked");
-        
+
         const clearCache = document.getElementById('clearCache').checked;
         const clearCookies = document.getElementById('clearCookies').checked;
         const clearHistory = document.getElementById('clearHistory').checked;
 
         log(`Selected options: Cache: ${clearCache}, Cookies: ${clearCookies}, History: ${clearHistory}`);
 
-        // Collect the selected options
         let dataToClear = {};
         if (clearCache) dataToClear.cache = true;
         if (clearCookies) dataToClear.cookies = true;
@@ -59,13 +79,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 log(`Error clearing data: ${chrome.runtime.lastError.message}`, true);
                 createNotification('Error', 'Failed to clear data. Please try again.');
             } else {
+                if (clearCache) addClearedAnimation('clearCache');
+                if (clearCookies) addClearedAnimation('clearCookies');
+                if (clearHistory) addClearedAnimation('clearHistory');
+
                 log(`Data cleared: ${JSON.stringify(dataToClear)}`);
                 createNotification('Success', 'Selected data cleared successfully!');
             }
         });
     });
 
-    // Event handler for Clear All button
     document.getElementById('clearAllBtn').addEventListener('click', function() {
         log("Clear All button clicked");
 
@@ -84,6 +107,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 log(`Error clearing data: ${chrome.runtime.lastError.message}`, true);
                 createNotification('Error', 'Failed to clear data. Please try again.');
             } else {
+                addClearedAnimation('clearCache');
+                addClearedAnimation('clearCookies');
+                addClearedAnimation('clearHistory');
+
                 log('Data cleared: {"cache":true,"cookies":true,"history":true}');
                 createNotification('Success', 'All data cleared successfully!');
             }
