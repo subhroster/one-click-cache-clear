@@ -1,0 +1,87 @@
+.container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.05);
+    max-width: 350px;
+    width: 100%;
+  }
+  
+  h3 {
+    font-size: 1.5em;
+    margin: 0 0 24px;
+    text-align: center;
+    color: #1c1c1e;
+    font-weight: 500;
+  }
+  
+  label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 1em;
+    color: #3a3a3c;
+  }
+  
+  label input {
+    margin-right: 12px;
+    accent-color: #007aff;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid #d1d1d6;
+  }
+  
+  button {
+    display: inline-block;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 1em;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 12px;
+    background-color: #007aff;
+    color: white;
+  }
+  
+  button.clear-all {
+    background-color: #f4f4f4;
+    color: #1c1c1e;
+    border: 1px solid #d1d1d6;
+  }
+  
+  /* Styles for progress bars and data usage section */
+  .usage-section {
+    margin-top: 20px;
+  }
+  
+  .usage-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  progress {
+    width: 150px;
+    height: 14px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 10px;
+  }
+  
+  progress::-webkit-progress-bar {
+    background-color: #e5e5ea;
+    border-radius: 10px;
+  }
+  
+  progress::-webkit-progress-value {
+    background-color: #007aff;
+    border-radius: 10px;
+  }
+  
+  span {
+    font-size: 0.9em;
+  }
+  
